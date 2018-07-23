@@ -1,0 +1,32 @@
+// Copyright (c) 2018, The TurtleCoin Developers
+// 
+// Please see the included LICENSE file for more information.
+
+syntax = "proto3";
+
+package TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes;
+
+message Hash {
+  repeated uint32 data = 1;
+}
+
+message PublicKey {
+  repeated uint32 data = 1;
+}
+
+message SecretKey {
+  repeated uint32 data = 1;
+}
+
+message KeyDerivation {
+  repeated uint32 data = 1;
+}
+
+message KeyImage {
+  repeated uint32 data = 1;
+}
+
+message Signature {
+  repeated uint32 data = 1;
+}
+

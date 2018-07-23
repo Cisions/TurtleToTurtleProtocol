@@ -1,0 +1,428 @@
+// Copyright (c) 2018, The TurtleCoin Developers
+// 
+// Please see the included LICENSE file for more information.
+
+syntax = "proto3";
+import "TurtleCoin.Legacy.CryptoTypes.proto";
+import "TurtleCoin.Legacy.CryptoNote.proto";
+
+package TurtleToTurtle.TurtleCoin.Legacy.Rpc;
+
+message Status {
+  string status = 1;
+}
+
+message GetHeight {
+  message Request {
+  }
+  message Response {
+    uint64 height = 1;
+    uint32 network_height = 2;
+    Status status = 3;
+  }
+}
+
+message GetBlocksFast {
+  message Request {
+    repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash block_ids = 1;
+  }
+  message Response {
+    TurtleToTurtle.TurtleCoin.Legacy.CryptoNote.RawBlock blocks = 1;
+    uint64 start_height = 2;
+    uint64 current_height = 3;
+    Status status = 4;
+  }
+}
+
+message GetTransactions {
+  message Request {
+    repeated string txs_hashes = 1;
+  }
+  message Response {
+    repeated string txs_as_hex = 1;
+	repeated string missed_tx = 2;
+	Status status = 3;
+  }
+}
+
+message GetPoolChangesLite {
+  message Request {
+    TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash tailBlockId = 1;
+	repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash knownTxsIds = 2;
+  }
+  message Response {
+    bool isTailBlockActual = 1;
+	repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoNote.Transaction addedTxs = 2;
+	repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash deletedTxsIds = 3;
+	Status status = 4;
+  }
+}
+
+message GetGlobalOutputIndexes {
+  message Request {
+    TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash txid = 1;
+  }
+  message Response {
+    repeated uint64 o_indexes = 1;
+	Status status = 2;
+  }
+}
+
+message OutsForAmountEntry {
+  uint32 global_amount_index = 1;
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.PublicKey out_key = 2;
+}
+
+message OutsForAmount {
+  uint64 amount = 1;
+  repeated OutsForAmountEntry outs = 2;
+}
+
+message GetRandomOutputsForAmounts {
+  message Request {
+    repeated uint64 amounts = 1;
+	uint32 outs_count = 2;
+  }
+  message Response {
+    repeated OutsForAmount outs = 1;
+	Status status = 2;
+  }
+}
+
+message SendRawTransaction {
+  message Request {
+    TurtleToTurtle.TurtleCoin.Legacy.CryptoNote.Transaction transaction = 1;
+  }
+  message Response {
+    Status status = 1;
+  }
+}
+
+message GetInfo {
+  message Request {
+  }
+  message Response {
+    uint64 height = 1;
+    uint64 difficulty = 2;
+    uint64 tx_count = 3;
+    uint64 tx_pool_size = 4;
+    uint64 alt_blocks_count = 5;
+    uint64 outgoing_connections_count = 6;
+    uint64 incoming_connections_count = 7;
+    uint64 white_peerlist_size = 8;
+    uint64 grey_peerlist_size = 9;
+    uint64 last_known_block_index = 10;
+    uint64 network_height = 11;
+    repeated uint64 upgrade_heights = 12;
+    uint64 supported_height = 13;
+    uint64 hashrate = 14;
+    uint32 major_version = 15;
+    uint32 minor_version = 16;
+    string version = 17;
+    uint64 start_time = 18;
+    bool synced = 19;
+    bool testnet = 20;
+    Status status = 21;
+  }
+}
+
+message GetBlockCount {
+  message Request {
+    repeated string request = 1;
+  }
+  message Response {
+    uint64 count = 1;
+	Status status = 2;
+  }
+}
+
+message GetBlockHash {
+  message Request {
+    uint64 height = 1;
+  }
+  message Response {
+    string hash = 1;
+  }
+}
+
+message GetBlockTemplate {
+  message Request {
+    uint64 reserve_size = 1;
+	string wallet_address = 2;
+  }
+  message Response {
+    uint64 difficulty = 1;
+	uint64 height = 2;
+	uint64 reserved_offset = 3;
+	string blocktemplate_blob = 4;
+	Status status = 5;
+  }
+}
+
+message GetCurrencyId {
+  message Request {
+  }
+  message Response {
+    string currency_id_blob = 1;
+  }
+}
+
+message SubmitBlock {
+  message Request {
+    repeated string blockData = 1;
+  }
+  message Response {
+    Status status = 1;
+  }
+}
+
+message BlockHeaderResponse {
+  message BlockHeader {
+    uint32 major_version = 1;
+	uint32 minor_version = 2;
+	uint64 timestamp = 3;
+	string prev_hash = 4;
+	uint32 nonce = 5;
+	bool orphan_status = 6;
+	uint64 height = 7;
+	uint64 depth = 8;
+	string hash = 9;
+	uint64 difficulty = 10;
+	uint64 reward = 11;
+	uint32 num_txes = 12;
+	uint64 block_size = 13;
+  }
+  Status status = 2;
+}
+
+message GetBlockHeadersRange {
+  message Request {
+    uint64 start_height = 1;
+	uint64 end_height = 2;
+  }
+  message Response {
+    repeated BlockHeaderResponse headers = 1;
+	bool untrusted = 2;
+	Status status = 3;
+  }
+}
+
+message TransactionShort {
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash hash = 1;
+  uint64 fee = 2;
+  uint64 amount_out = 3;
+  uint64 size = 4;
+}
+
+message TransactionDetails {
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash hash = 1;
+  uint64 size = 2;
+  string paymentId = 3;
+  uint64 mixin = 4;
+  uint64 fee = 5;
+  uint64 amount_out = 6;
+}
+
+message BlockShort {
+  uint64 difficulty = 1;
+  uint64 timestamp = 2;
+  uint64 height = 3;
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash hash = 4;
+  uint64 tx_count = 5;
+  uint64 cumul_size = 6;
+}
+
+message BlockDetails {
+  uint32 major_version = 1;
+  uint32 minor_version = 2;
+  uint64 timestamp = 3;
+  string prev_hash = 4;
+  uint32 nonce = 5;
+  bool orphan_status = 6;
+  uint64 height = 7;
+  uint64 depth = 8;
+  string hash = 9;
+  uint64 difficulty = 10;
+  uint64 reward = 11;
+  uint64 blockSize = 12;
+  uint64 sizeMedian = 13;
+  uint64 effectiveSizeMedian = 14;
+  uint64 transactionsCumulativeSize = 15;
+  string alreadyGeneratedCoins = 16;
+  uint64 alreadyGeneratedTransactions = 17;
+  uint64 baseReward = 18;
+  double penalty = 19;
+  uint64 totalFeeAmount = 20;
+  repeated TransactionShort transactions = 21;
+}
+
+message GetLastBlockHeader {
+  message Request {
+  }
+  message Response {
+    BlockHeaderResponse blockHeader = 1;
+  }
+}
+
+message GetBlockHeaderByHash {
+  message Request {
+    string hash = 1;
+  }
+  message Response {
+    BlockHeaderResponse blockHeader = 1;
+  }
+}
+
+message GetBlockHeaderByHeight {
+  message Request {
+    uint64 height = 1;
+  }
+  message Response {
+    BlockHeaderResponse blockHeader = 1;
+  }
+}
+
+message GetBlocksList {
+  message Request {
+    uint64 height = 1;
+  }
+  message Response {
+    repeated BlockShort blocks = 1;
+	Status status = 2;
+  }
+}
+
+message GetBlockDetails {
+  message Request {
+    string hash = 1;
+  }
+  message Response {
+    BlockDetails block = 1;
+	Status status = 2;
+  }
+}
+
+message GetTransactionDetails {
+  message Request {
+    string hash = 1;
+  }
+  message Response {
+    TurtleToTurtle.TurtleCoin.Legacy.CryptoNote.Transaction tx = 1;
+	TransactionDetails txDetails = 2;
+	BlockShort block = 3;
+	Status status = 4;
+  }
+}
+
+message GetPool {
+  message Request {
+  }
+  message Response {
+    repeated TransactionShort transactions = 1;
+	Status status = 2;
+  }
+}
+
+message QueryBlocksLite {
+  message Request {
+    repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash block_ids = 1;
+	uint64 timestamp = 2;
+  }
+  message Response {
+    uint64 start_height = 1;
+	uint64 current_height = 2;
+	uint64 full_offset = 3;
+	repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoNote.BlockShortInfo items = 4;
+	Status status = 5;
+  }
+}
+
+message GetBlocksDetailsByHeights {
+  message Request {
+    repeated uint64 blockHeights = 1;
+  }
+  message Response {
+    repeated BlockDetails block = 1;
+	Status status = 2;
+  }
+}
+
+message GetBlocksDetailsByHashes {
+  message Request {
+    repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash blockHashes = 1;
+  }
+  message Response {
+    repeated BlockDetails block = 1;
+	Status status = 2;
+  }
+}
+
+message GetBlockDetailByHeight {
+  message Request {
+    uint64 height = 1;
+  }
+  message Response {
+    BlockDetails block = 1;
+	Status status = 2;
+  }
+}
+
+message GetBlockDetailByHash {
+  message Request {
+    TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash hash = 1;
+  }
+  message Response {
+    BlockDetails block = 1;
+	Status status = 2;
+  }
+}
+
+message GetBlockHashesByTimestamps {
+  message Request {
+    uint64 timestampBegin = 1;
+	uint64 secondsCount = 2;
+  }
+  message Response {
+    repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash blockHashes = 1;
+	Status status = 2;
+  }
+}
+
+message GetTransactionHashesByPaymentId {
+  message Request {
+    TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash paymentId = 1;
+  }
+  message Response {
+    repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash transactionHashes = 1;
+	Status status = 2;
+  }
+}
+
+message GetTransactionDetailsByHashes {
+  message Request {
+    repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash transactionHashes = 1;
+  }
+  message Response {
+    repeated TransactionDetails transactions = 1;
+	Status status = 2;
+  }
+}
+
+message GetPeers {
+  message Request {
+  }
+  message Response {
+    repeated string peers = 1;
+	Status status = 2;
+  }
+}
+
+message GetFeeAddress {
+  message Request {
+  }
+  message Response {
+    string address = 1;
+	uint64 amount = 2;
+	Status status = 3;
+  }
+}

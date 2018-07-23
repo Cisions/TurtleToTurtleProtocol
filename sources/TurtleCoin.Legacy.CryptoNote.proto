@@ -1,0 +1,122 @@
+// Copyright (c) 2018, The TurtleCoin Developers
+// 
+// Please see the included LICENSE file for more information.
+
+syntax = "proto3";
+import "TurtleCoin.Legacy.CryptoTypes.proto";
+
+package TurtleToTurtle.TurtleCoin.Legacy.CryptoNote;
+
+message BaseInput {
+  uint32 blockIndex = 1;
+}
+
+message KeyInput {
+  uint64 amount = 1;
+  repeated uint32 outputIndexes = 2;
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.KeyImage keyImage = 3;
+}
+
+message KeyOutput {
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.PublicKey key = 1;
+}
+
+message TransactionInput {
+  BaseInput input = 1;
+  KeyInput key = 2;
+}
+
+message TransactionOutputTarget {
+  KeyOutput key = 1;
+}
+
+message TransactionOutput {
+  uint64 amount = 1;
+  TransactionOutputTarget target = 2;
+}
+
+message TransactionPrefix {
+  uint32 version = 1;
+  uint64 unlockTime = 2;
+  repeated TransactionInput inputs = 3;
+  repeated TransactionOutput outputs = 4;
+  repeated uint32 extra = 5;
+}
+
+message Transaction {
+  TransactionPrefix prefix = 1;
+  repeated TransactionSignatures signatures = 2;
+}
+
+message TransactionSignatures {
+  repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Signature signature = 1;
+}
+
+message BaseTransaction {
+  TransactionPrefix prefix = 1;
+}
+
+message ParentBlock {
+  uint32 majorVersion = 1;
+  uint32 minorVersion = 2;
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash previousBlockHash = 3;
+  uint32 transactionCount = 4;
+  repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash baseTransactionBranch = 5;
+  BaseTransaction baseTransaction = 6;
+  repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash blockchainBranch = 7;
+}
+
+message BlockHeader {
+  uint32 majorVersion = 1;
+  uint32 minorVersion = 2;
+  uint32 nonce = 3;
+  uint64 timestamp = 4;
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash previousBlockHash = 5;
+}
+
+message BlockTemplate {
+  BlockHeader header = 1;
+  Transaction baseTransaction = 2;
+  repeated TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash transactionHashes = 3;
+}
+
+message AccountPublicAddress {
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.PublicKey spendPublicKey = 1;
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.PublicKey viewPublicKey = 2;
+}
+
+message AccountKeys {
+  AccountPublicAddress address = 1;
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.SecretKey spendSecretKey = 2;
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.SecretKey viewSecretKey = 3;
+}
+
+message KeyPair {
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.PublicKey publicKey = 1;
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.SecretKey secretKey = 2;
+}
+
+message BinaryArray {
+  repeated uint32 data = 1;
+}
+
+message RawBlock {
+  BinaryArray block = 1;
+  repeated BinaryArray transactions = 2;
+}
+
+message BlockFullInfo {
+  RawBlock block = 1;
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash hash = 2;
+}
+
+message TransactionPrefixInfo {
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash txHash = 1;
+  TransactionPrefix txPrefix = 2;
+}
+
+message BlockShortInfo {
+  TurtleToTurtle.TurtleCoin.Legacy.CryptoTypes.Hash blockId = 1;
+  BinaryArray block = 2;
+  repeated TransactionPrefixInfo txPrefixes = 3;
+}
